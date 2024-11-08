@@ -40,12 +40,13 @@ const Profile = ({ handleCloseOpenProfile }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setTempPicture(data.url.toString());
+        const imageUrl = data.url.toString();
+        setTempPicture(imageUrl);
 
         const resData = {
           id: auth.reqUser.id,
           token: localStorage.getItem("token"),
-          data: { profile: data.url.toString() },
+          data: { profile: imageUrl },
         };
         dispatch(updateUser(resData));
       });

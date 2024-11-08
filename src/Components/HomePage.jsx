@@ -33,6 +33,12 @@ function HomePage() {
   const chat = useSelector((state) => state.chat);
   const message = useSelector((state) => state.message);
 
+  const { reqUser } = useSelector((state) => state.auth);
+  // const reqUser = auth.reqUser;
+  useEffect(() => {
+    console.log("Updated user:", reqUser);
+  }, [reqUser]);
+
   const token = localStorage.getItem("token");
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -99,12 +105,12 @@ function HomePage() {
     setMessages((prevMessages) => [...prevMessages, receivedMessage]);
   };
 
-  // Effect to establish a WebSocket connection
+  // establish a WebSocket connection
   useEffect(() => {
     connect();
   }, [connect]);
 
-  // Effect to subscribe to a chat when connected
+  // subscribe to a chat when connected
   useEffect(() => {
     if (isConnected && stompClient && currentChat?.id) {
       const subscription = currentChat.isGroupChat
@@ -117,7 +123,7 @@ function HomePage() {
     }
   }, [isConnected, stompClient, currentChat]);
 
-  // Effect to handle sending a new message via WebSocket
+  // handle sending a new message via WebSocket
   useEffect(() => {
     if (message.newMessage && stompClient) {
       stompClient.send("/app/message", {}, JSON.stringify(message.newMessage));
@@ -125,14 +131,14 @@ function HomePage() {
     }
   }, [message.newMessage, stompClient]);
 
-  // Effect to set the messages state from the store
+  // set the messages state from the store
   useEffect(() => {
     if (message.messages) {
       setMessages(message.messages);
     }
   }, [message.messages]);
 
-  // Effect to update lastMessages when messages change
+  // update lastMessages when messages change
   useEffect(() => {
     const prevLastMessages = { ...lastMessages };
     if (message.messages && message.messages.length > 0) {
@@ -145,14 +151,14 @@ function HomePage() {
   }, [message.messages]);
   // TODO : [message.messages, lastMessages]
 
-  // Effect to get all messages when the current chat changes
+  // get all messages when the current chat changes
   useEffect(() => {
     if (currentChat?.id) {
       dispatch(getAllMessages({ chatId: currentChat.id, token }));
     }
   }, [currentChat, message.newMessage, token, dispatch]);
 
-  // Effect to get user chats and groups
+  // get user chats and groups
   useEffect(() => {
     dispatch(getUsersChat({ token }));
   }, [chat.createdChat, chat.createdGroup, token, dispatch]);
@@ -188,7 +194,7 @@ function HomePage() {
     setContent(""); // Clear content after sending
   };
 
-  // Effect to get the current user's information
+  // get the current user's information
   useEffect(() => {
     dispatch(currentUser(token));
   }, [token, dispatch]);
@@ -203,7 +209,7 @@ function HomePage() {
     setCurrentChat(item);
   };
 
-  // Effect to fetch messages when chat changes
+  // fetch messages when chat changes
   useEffect(() => {
     chat?.chats &&
       chat?.chats?.forEach((item) => {
@@ -232,7 +238,7 @@ function HomePage() {
     navigate("/signin");
   };
 
-  // Effect to check if the user is authenticated
+  // check if the user is authenticated
   useEffect(() => {
     if (!auth.reqUser) {
       navigate("/signin");

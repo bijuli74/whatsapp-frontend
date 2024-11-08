@@ -13,6 +13,7 @@ const initialValue = {
   reqUser: null, // Holds data related to the current user
   searchUser: [], // Initialize as an empty array to avoid map errors
   updateUser: null, // Holds data related to user updates
+  chats: [],
 };
 
 // Reducer function for handling authentication-related actions
@@ -28,7 +29,11 @@ export const authReducer = (store = initialValue, { type, payload }) => {
     // Ensure searchUser is an array, defaulting to an empty array if payload is missing
     return { ...store, searchUser: payload || [] };
   } else if (type === UPDATE_USER) {
-    return { ...store, updateUser: payload };
+    return {
+      ...store,
+      reqUser: { ...store.reqUser, ...payload },
+      updateUser: payload,
+    };
   }
   // If the action type is not recognized, return the current store unchanged
   return store;
