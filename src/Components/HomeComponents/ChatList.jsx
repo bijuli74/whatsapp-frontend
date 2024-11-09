@@ -32,7 +32,8 @@ const ChatList = ({
           </div>
         ))}
 
-      {chat?.chats?.length > 0 &&
+      {Array.isArray(chat.chats) &&
+        chat?.chats?.length > 0 &&
         !querys &&
         chat.chats.map((item, index) => (
           <div
